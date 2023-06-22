@@ -13,7 +13,7 @@ VALUES
 ('Coding');
 
 
-INSERT INTO role (title, salary, department_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES
 ('Chief Executive Officer', 555000.00, 1),
 ('Marketing Manager', 125000.00, 2),
