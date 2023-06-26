@@ -104,4 +104,101 @@ inquirer.prompt({
     }
 });
 
+// Function to view all deparments
+function viewAllDepartments() {
+    const query = "SELECT * FROM departments";
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        console.log(res);
+        start();
+    });
+}
 
+// Function to view all roles
+function viewAllRoles() {
+    // Implement the logic to view all roles from the database
+    // Execute a SQL query using the connection.query() method
+    // Display the results to the user
+}
+
+// Function to view all roles
+function viewAllEmployees() {
+    // Implement the logic to view all employees from the database
+    // Execute a SQL query using the connection.query() method
+    // Display the results to the user 
+}
+
+// function to add departments
+function addDepartment() {
+    // Implement the logic to add a department to the database
+    // Prompt the user to enter the department details using inquirer
+    // Execute a SQL query using the connection.query() method to insert the department into the departments table
+    // Display a success message to the user
+}
+
+// Function to add roles
+function addRole() {
+  // Implement the logic to add a role to the database
+  // Prompt the user to enter the role details using inquirer
+  // Execute a SQL query using the connection.query() method to insert the role into the role table
+  // Display a success message to the user
+
+}
+
+// Function to add employee's
+function addEmployee() {
+  // Implement the logic to add an employee to the database
+  // Prompt the user to enter the employee details using inquirer
+  // Execute a SQL query using the connection.query() method to insert the employee into the employee table
+  // Display a success message to the user
+}
+
+// Function to add a manager
+function addManager() {
+  // Implement the logic to add a manager to the database
+  // Prompt the user to enter the manager details using inquirer
+  // Execute a SQL query using the connection.query() method to insert the manager into the employee table
+  // Display a success message to the user
+}
+
+
+// Function to update employee role
+function updateEmployeeRole() {
+  // Implement the logic to update an employee's role in the database
+  // Prompt the user to select the employee and enter the new role using inquirer
+  // Execute a SQL query using the connection.query() method to update the employee's role
+  // Display a success message to the user
+}
+
+// Function to view employees by manager
+function viewEmployeesByManager() {
+  // Implement the logic to view employees by manager from the database
+  // Prompt the user to select a manager using inquirer
+  // Execute a SQL query using the connection.query() method to retrieve the employees by manager
+  // Display the results to the user
+}
+
+// Function to view employee by department
+function viewEmployeesByDepartment() {
+  // Implement the logic to view employees by department from the database
+  // Prompt the user to select a department using inquirer
+  // Execute a SQL query using the connection.query() method to retrieve the employees by department
+  // Display the results to the user
+}
+
+// Function to delete data
+function deleteData() {
+  // Implement the logic to delete departments, roles, or employees from the database
+  // Prompt the user to select the data type to delete and provide further details using inquirer
+  // Execute a SQL query using the connection.query() method to delete the selected data
+  // Display a success message to the user
+}
+
+
+// Function to view budget by department
+function viewBudgetByDepartment() {
+  // Implement the logic to view the total utilized budget of a department from the database
+  // Prompt the user to select a department using inquirer
+  // Execute a SQL query using the connection.query() method to calculate the budget
+  // Display the total budget to
+}
