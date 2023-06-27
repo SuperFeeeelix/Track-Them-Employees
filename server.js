@@ -381,6 +381,11 @@ function updateEmployeeRole() {
           // Execute a SQL query using the connection.query() method to retrieve the employees by manager
           const viewQuery =
             "SELECT * FROM employee WHERE manager_id = ?";
+            connection.query(viewQuery, [managerId], (err, res) => {
+                if(err) throw err;
+                console.table(res);
+                start();
+            })
         });
     });
 }
