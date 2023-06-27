@@ -147,18 +147,73 @@ function viewAllEmployees() {
 
 // function to add departments
 function addDepartment() {
-    // Implement the logic to add a department to the database
     // Prompt the user to enter the department details using inquirer
+    inquirer
+        .prompt({
+            type: "input",
+            name: "name",
+            message: "Enter the name of the department you are trying to add:",
+        })
+    .then((answer) => {
+    //Retrieve the users input from the answer object 
+        const departmentName = answer.name;
+     
     // Execute a SQL query using the connection.query() method to insert the department into the departments table
-    // Display a success message to the user
+        const query = "INDERT INTO departments (department_name) VALUES (?)"
+    connection.query(query, [departmentName], (err, res) => {
+        if(err) throw err; 
+        console.log("Department added successfully!!!");
+        start();
+    })
+})
+    
 }
 
 // Function to add roles
 function addRole() {
   // Implement the logic to add a role to the database
-  // Prompt the user to enter the role details using inquirer
-  // Execute a SQL query using the connection.query() method to insert the role into the role table
-  // Display a success message to the user
+  const query = "SELECT * FROM departments";
+  connection.query(query, (err, res) => {
+    if(err) throw err;
+    // Prompt the user to enter the role details using inquirer
+    inquirer
+        .prompt([
+        {
+            type: "input",
+            name: "Title",
+            message: "Enter the title of the role",
+        }, 
+        {
+            type: "input",
+            name: "Salary",
+            message: "Enter the desired salary for the role",
+        },
+        {
+            type: "input",
+            name: "Department",
+            message: "What department for the role",
+        },
+        ])
+  })
+  .then((answers) => {
+    const { title, salary, department } = answers;
+
+    //Find the department_id based on the selected department name
+    const selectedDepartment = res.find(
+        (dep) => dep.department_name === department
+    );
+    const departmentId = selectedDepartment.id;
+    // Execute a SQL query using the connection.query() method to insert the role into the role table
+    connection.query(
+        insertQuery,
+        [title, salary, departmentId],
+        (err, res) => {
+            if (err) throw err;
+            console.log("Role added successfully!");
+            start();
+        }
+    );
+  });
 
 }
 
