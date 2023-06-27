@@ -117,7 +117,7 @@ function viewAllDepartments() {
 // Function to view all roles
 function viewAllRoles() {
     // Implement the logic to view all roles from the database
-    const query = "SELECT * FROM role.title, role.id, departments.department_name, role.salary FROM role JOIN departments ON role.department_id = department.id";
+    const query = "SELECT * FROM role.id, role.title, departments.department_name, role.salary FROM role JOIN departments ON role.department_id = department.id";
     // Execute a SQL query using the connection.query() method
     connection.query(query, (err, res) => {
         if(err) throw err;
@@ -129,9 +129,20 @@ function viewAllRoles() {
 // Function to view all roles
 function viewAllEmployees() {
     // Implement the logic to view all employees from the database
-    const query = "SELECT * FROM "
+    const query = 
+    `SELECT * FROM e.id, e.first_name, e.last_name, r.title, d.department_name, r.salary,
+     CONCAT(m.first_name, ' ', m.last_name) AS manager_name 
+     FROM employee e 
+     LEFT JOIN role r ON e.role_id = r.id 
+     LEFT JOIN departments d ON r.department_id = d.id 
+     LEFT JOIN employee m ON e.manager_id = m.id; `
     // Execute a SQL query using the connection.query() method
-    // Display the results to the user 
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        console.log(res);
+        start();
+    })
+
 }
 
 // function to add departments
