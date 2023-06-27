@@ -305,41 +305,82 @@ function addManager() {
 
 // Function to update employee role
 function updateEmployeeRole() {
-  // Implement the logic to update an employee's role in the database
-  // Prompt the user to select the employee and enter the new role using inquirer
-  // Execute a SQL query using the connection.query() method to update the employee's role
-  // Display a success message to the user
-}
-
-// Function to view employees by manager
-function viewEmployeesByManager() {
-  // Implement the logic to view employees by manager from the database
-  // Prompt the user to select a manager using inquirer
-  // Execute a SQL query using the connection.query() method to retrieve the employees by manager
-  // Display the results to the user
-}
-
-// Function to view employee by department
-function viewEmployeesByDepartment() {
-  // Implement the logic to view employees by department from the database
-  // Prompt the user to select a department using inquirer
-  // Execute a SQL query using the connection.query() method to retrieve the employees by department
-  // Display the results to the user
-}
-
-// Function to delete data
-function deleteData() {
-  // Implement the logic to delete departments, roles, or employees from the database
-  // Prompt the user to select the data type to delete and provide further details using inquirer
-  // Execute a SQL query using the connection.query() method to delete the selected data
-  // Display a success message to the user
-}
-
-
-// Function to view budget by department
-function viewBudgetByDepartment() {
-  // Implement the logic to view the total utilized budget of a department from the database
-  // Prompt the user to select a department using inquirer
-  // Execute a SQL query using the connection.query() method to calculate the budget
-  // Display the total budget to
+    // Implement the logic to update an employee's role in the database
+    const query = "SELECT * FROM employee";
+    connection.query(query, (err, employees) => {
+      if (err) throw err;
+      const employeeChoices = employees.map(
+        (employee) =>
+          `${employee.id} - ${employee.first_name} ${employee.last_name}`
+      );
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "employee",
+            message: "Select the employee to update:",
+            choices: employeeChoices,
+          },
+          {
+            type: "input",
+            name: "newRole",
+            message: "Enter the new role for the employee:",
+          },
+        ])
+        .then((answers) => {
+          // Retrieve the user's input from the answers object
+          const { employee, newRole } = answers;
+  
+          // Extract the employee ID from the selected employee choice
+          const employeeId = employee.split(" - ")[0];
+  
+          // Execute a SQL query using the connection.query() method to update the employee's role
+          const updateQuery =
+            "UPDATE employee SET role_id = ? WHERE id = ?";
+          connection.query(
+            updateQuery,
+            [newRole, employeeId],
+            (err, res) => {
+              if (err) throw err;
+              console.log("Employee role updated successfully!");
+              start();
+            }
+          );
+        });
+    });
+  }
+  
+  // Function to view employees by manager
+  function viewEmployeesByManager() {
+    // Implement the logic to view employees by manager from the database
+    const query = "SELECT * FROM employee";
+    connection.query(query, (err, employees) => {
+      if (err) throw err;
+      const managerChoices = employees
+        .filter((employee) => employee.manager_id === null)
+        .map(
+          (manager) =>
+            `${manager.id} - ${manager.first_name} ${manager.last_name}`
+        );
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "manager",
+            message: "Select the manager:",
+            choices: managerChoices,
+          },
+        ])
+        .then((answers) => {
+          // Retrieve the user's input from the answers object
+          const { manager } = answers;
+  
+          // Extract the manager ID from the selected manager choice
+          const managerId = manager.split(" - ")[0];
+  
+          // Execute a SQL query using the connection.query() method to retrieve the employees by manager
+          const viewQuery =
+            "SELECT * FROM employee WHERE manager_id = ?";
+        });
+    });
 }
