@@ -220,19 +220,88 @@ function addRole() {
 // Function to add employee's
 function addEmployee() {
   // Implement the logic to add an employee to the database
-  // Prompt the user to enter the employee details using inquirer
-  // Execute a SQL query using the connection.query() method to insert the employee into the employee table
-  // Display a success message to the user
+const query = "SELECT * FROM role"; 
+connection.query(query, (err, role) => {
+    if (err) throw err;
+    // Prompt the user to enter the employee details using inquirer
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "Enter the employee's first name",
+        }, 
+        {
+            type: "input",
+            name: "lastName",
+            message: "Enter the employee's last name",
+        },
+        {
+            type: "list",
+            name: "role",
+            choices: role.map((role) => role.title),
+        },
+        {
+            type:"input",
+            name: "messageId",
+            message: "Enter the manager's ID (if applicable):",
+            default: "NULL",
+        },
+    ])
+    .then((answers) => {
+        const { firstName, lastName, role, managerId } = answers;
+        
+        const selectedRole = role.find((r) => r.title === role);
+        const roleId = selectedRole.id;
+        // Execute a SQL query using the connection.query() method to insert the employee into the employee table
+        const insertQuery =
+        connection.query(
+            insertQuery,
+            [firstName, lastName, role, managerId],
+            (err, res) => {
+                if (err) throw err;
+                console.log("employee may have been added successfully. Unfortunetly!");
+                start();
+            }
+        );
+    });
+})
 }
 
-// Function to add a manager
 function addManager() {
-  // Implement the logic to add a manager to the database
-  // Prompt the user to enter the manager details using inquirer
-  // Execute a SQL query using the connection.query() method to insert the manager into the employee table
-  // Display a success message to the user
-}
-
+    // Implement the logic to add a manager to the database
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "firstName",
+          message: "Enter the manager's first name:",
+        },
+        {
+          type: "input",
+          name: "lastName",
+          message: "Enter the manager's last name:",
+        },
+      ])
+      .then((answers) => {
+        // Retrieve the user's input from the answers object
+        const { firstName, lastName } = answers;
+  
+        // Execute a SQL query using the connection.query() method to insert the manager into the employee table
+        const insertQuery =
+          "INSERT INTO employee (first_name, last_name, manager_id) VALUES (?, ?, NULL)";
+        connection.query(
+          insertQuery,
+          [firstName, lastName],
+          (err, res) => {
+            if (err) throw err;
+            console.log("Manager added successfully!");
+            start();
+          }
+        );
+      });
+  }
+  
 
 // Function to update employee role
 function updateEmployeeRole() {
