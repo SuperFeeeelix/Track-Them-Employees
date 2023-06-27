@@ -98,7 +98,7 @@ inquirer.prompt({
             console.log("Goodbye!!!!");
             break;
             default:
-            console.log("invalid choice. Please try again.");
+            console.log("invalid choice. Please try again and again if you have to but don't quit.");
             start();
 
     }
@@ -117,13 +117,19 @@ function viewAllDepartments() {
 // Function to view all roles
 function viewAllRoles() {
     // Implement the logic to view all roles from the database
+    const query = "SELECT * FROM role.title, role.id, departments.department_name, role.salary FROM role JOIN departments ON role.department_id = department.id";
     // Execute a SQL query using the connection.query() method
-    // Display the results to the user
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        console.table(res);
+        start();
+    })
 }
 
 // Function to view all roles
 function viewAllEmployees() {
     // Implement the logic to view all employees from the database
+    const query = "SELECT * FROM "
     // Execute a SQL query using the connection.query() method
     // Display the results to the user 
 }
