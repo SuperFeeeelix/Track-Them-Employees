@@ -46,11 +46,11 @@ inquirer.prompt({
     switch (answer.action) {
         case "view all departments":
             // Call the function to handle view all departments
-            viewAllDepartments();
+                viewAllDepartments();
             break;
-        case "View all roles":
+        case "View all role":
             // View all roles
-            viewAllRoles();
+                viewAllRoles();
             break;
         case "View all Employees":
             // View all employees
@@ -117,7 +117,9 @@ function viewAllDepartments() {
 // Function to view all roles
 function viewAllRoles() {
     // Implement the logic to view all roles from the database
-    const query = "SELECT * FROM role.id, role.title, departments.department_name, role.salary FROM role JOIN departments ON role.department_id = department.id";
+    const query = `SELECT * FROM role.id, role.title, departments.department_name, role.salary 
+    FROM role JOIN departments 
+    ON role.department_id = department.id`;
     // Execute a SQL query using the connection.query() method
     connection.query(query, (err, res) => {
         if(err) throw err;
@@ -349,6 +351,8 @@ function updateEmployeeRole() {
         });
     });
   }
+
+  //
   
   // Function to view employees by manager
   function viewEmployeesByManager() {
@@ -385,7 +389,109 @@ function updateEmployeeRole() {
                 if(err) throw err;
                 console.table(res);
                 start();
-            })
+            });
+        });
+    });
+}
+
+//Function to view employees by department
+function viewEmployeesByDepartment() {
+    //Implement the logic to view employee's by department from the database
+    const query = "SELECT * FROM departments";
+    connection.query(query, (err, departments) => {
+        if(err) throw err;
+        inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "department",
+                message: "Select the department:",
+                choices: departments.map((department) => department.department_name),
+            },
+        ])
+        .then((answers) => {
+            const { department } = answers;
+
+            const viewQuery = 
+            "SELECT * FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id FROM departments WHERE department_name = ?))";
+            connection.query(viewQuery, [department], (err, res) => {
+                if(err) throw err;
+                console.log(res);
+                start();
+            });
+        });
+    });
+}
+
+//Function to delete data
+function deleteData() {
+    inquirer
+    .prompt([
+        {
+            type: "list",
+            name: "data",
+            message: "Select the data to delete:",
+            choices: ["Departments", "Role", "Employees"],
+        },
+    ])
+    .then((answers) => {
+        //Retrieve the user's input from the answers object
+        const { data } = answers;
+
+        let deleteQuery;
+        switch (data) {
+            case "Departments":
+                deleteQuery = "DELTE FROM role";
+                break;
+            case "Role":
+                deleteQuery = "DELETE FROM employee";
+                break;
+            case "Employees":
+                deleteQuery = "DELETE FROM employee";
+                break;
+                default:
+                console.log("Invalid choices, Please come again soon.");
+                start();
+                return;
+        }
+        connection.query(deleteQuery, (err, res) => {
+            if(err) throw err;
+            console.log(`Deleted all ${data.toLowerCase()} successfully!!`);
+            start();
+        });
+    });
+}
+
+//Function to view budget by department
+function viewBudgetByDepartment() {
+    const query = "SELECT * FROM departments";
+    connection.query(query, (err, departments) => {
+        if(err) throw err;
+        inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "department",
+                message: "Select the department:",
+                choices: department.map((department) => department.department_name),
+            },
+        ])
+        .then((answers) => {
+            const { department } = answers;
+
+
+            const viewQuery = 
+            `SELECT departments.department_name, 
+            SUM(role.salary) AS total_budget 
+            FROM role JOIN departments 
+            ON role.department_id = department.id 
+            WHERE departments.department_name = ?`
+
+            connection.query(viewQuery, [department], (err, res) => {
+                if(err) throw err;
+                console.table(res);
+                start();
+            });
         });
     });
 }
