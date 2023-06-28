@@ -12,7 +12,6 @@ VALUES
 ('Maintenance'),
 ('Coding');
 
-
 INSERT INTO role (title, salary, department_id)
 VALUES
 ('Chief Executive Officer', 555000.00, 1),
@@ -25,8 +24,7 @@ VALUES
 ('Research and Development Manager ', 185000.00, 8),
 ('Legal Manager', 95000.00, 9),
 ('Maintenance Manager', 135000.00, 10),
-('Front-End Developer', 70000, 11),
-('Front-End Developer Lead', 125000, 12);
+('Front-End Developer', 70000, 11);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES 
@@ -39,4 +37,4 @@ VALUES
 ('John', 'Edralin', 7, 7),
 ('Salia', 'Steward', 8, 8),
 ('Gerilyn', 'Rufin', 9, 9),
-('Christian', 'Alvarez', 10, 10)
+('Christian', 'Alvarez', 10, 10);

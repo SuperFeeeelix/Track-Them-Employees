@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
     if(err) throw err;
     console.log("connected to the database!");
-    //start the application
+    
 });
 
 
@@ -25,16 +25,16 @@ inquirer.prompt([
         name: "action",
         message: "what would jesus do?",
         choices: [
-            "View all departments",
-            "View all roles",
-            "View all employees",
-            "Add a department",
-            "Add a role",
-            "Add an employee",
+            "View All Departments",
+            "View All Roles",
+            "View All Employees",
+            "Add a Department",
+            "Add a Role",
+            "Add an Employee",
             "Add a Manager",
-            "Update an employee role",
-            "View Employees by Manager",
-            "View Employees by Department",
+            "Update Employee Role",
+            "View Employees By Manager",
+            "View Employees By Department",
             "Delete Departments | Roles | Employees",
             "View the total utilized budget of a department",
             "Exit",
@@ -42,47 +42,47 @@ inquirer.prompt([
     },
 ]).then((answer) => {
     switch (answer.action) {
-        case "view all departments":
+        case "View All Departments":
             // Call the function to handle view all departments
                 viewAllDepartments();
             break;
-        case "View all role":
+        case "View All Roles":
             // View all roles
                 viewAllRoles();
             break;
-        case "View all Employees":
+        case "View All Employees":
             // View all employees
                 viewAllEmployees();
                 break;
-        case "Add a department":
+        case "Add a Department":
             // adds a department
                 addDepartment();
                 break;
-        case "Add a role":
+        case "Add a Role":
             //Adds a role 
                 addRole();
                 break;
-        case "Add an employee":
+        case "Add an Employee":
             //Adds employee
                 addEmployee();
                 break;
-        case "Add a manager":
+        case "Add a Manager":
             //Adds Manager
                 addManager();
                 break;
-        case "Update an employee role":
+        case "Update Employee Role":
             //Call the function to handle updating an employee's role
                 updateEmployeeRole();
                 break;
-        case "View employees by manager":
+        case "View Employees By Manager":
             //Call the function to handle viewing employees by manager
                 viewEmployeesByManager();
                 break;
-        case "View employees by department":
+        case "View Employees By Department":
             //Call the function to handle viewing employess by department
                 viewEmployeesByDepartment();
                 break;
-        case "Delete departments, roles, or employees":
+        case "Delete departments | Roles | Employees":
             //Call the function to handle deleting departments, roles, or employees
                 deleteData();
                 break;
@@ -107,7 +107,7 @@ function viewAllDepartments() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.log(res);
-        start();
+        //start();
     });
 }
 
@@ -116,12 +116,12 @@ function viewAllRoles() {
     // Implement the logic to view all roles from the database
     const query = `SELECT * FROM role.id, role.title, departments.department_name, role.salary 
     FROM role JOIN departments 
-    ON role.department_id = department.id`;
+    ON role.department_id = departments.id`;
     // Execute a SQL query using the connection.query() method
     connection.query(query, (err, res) => {
         if(err) throw err;
         console.table(res);
-        start();
+        //start();
     })
 }
 
@@ -139,8 +139,8 @@ function viewAllEmployees() {
     connection.query(query, (err, res) => {
         if(err) throw err;
         console.log(res);
-        start();
-    })
+        //start();
+    });
 
 }
 
@@ -157,14 +157,14 @@ function addDepartment() {
     ])
     .then((answer) => {
     //Retrieve the users input from the answer object 
-        const departmentName = answer.name;
-     
+        console.log(answer.name);
     // Execute a SQL query using the connection.query() method to insert the department into the departments table
-        const query = "INDERT INTO departments (department_name) VALUES (?)"
-    connection.query(query, [departmentName], (err, res) => {
+        const query = `INSERT INTO departments (department_name) VALUES ("${answer.name}) `;
+        connection.query(query, (err, res) => {
         if(err) throw err; 
         console.log("Department added successfully!!!");
-        start();
+        //start();
+        console.log(answer.name);
     });
 });
     
@@ -190,9 +190,12 @@ function addRole() {
             message: "Enter the desired salary for the role",
         },
         {
-            type: "input",
+            type: "list",
             name: "Department",
-            message: "What department for the role",
+            message: "What department for the role:",
+            choices: res.map(
+                (department) => department.department_name
+            ),
         },
         ])
   })
@@ -200,9 +203,7 @@ function addRole() {
     const { title, salary, department } = answers;
 
     //Find the department_id based on the selected department name
-    const selectedDepartment = res.find(
-        (dep) => dep.department_name === department
-    );
+    const selectedDepartment = res.find((dep) => dep.department_name === department);
     const departmentId = selectedDepartment.id;
     // Execute a SQL query using the connection.query() method to insert the role into the role table
     connection.query(
@@ -211,7 +212,7 @@ function addRole() {
         (err, res) => {
             if (err) throw err;
             console.log("Role added successfully!");
-            start();
+            //start();
         }
     );
   });
@@ -261,8 +262,8 @@ connection.query(query, (err, role) => {
             [firstName, lastName, role, managerId],
             (err, res) => {
                 if (err) throw err;
-                console.log("employee may have been added successfully. Unfortunetly!");
-                start();
+                console.log("employee may have been added successfully. Unfortunately!");
+                //start();
             }
         );
     });
@@ -297,7 +298,7 @@ function addManager() {
           (err, res) => {
             if (err) throw err;
             console.log("Manager added successfully!");
-            start();
+            //start();
           }
         );
       });
@@ -344,7 +345,7 @@ function updateEmployeeRole() {
             (err, res) => {
               if (err) throw err;
               console.log("Employee role updated successfully!");
-              start();
+              //start();
             }
           );
         });
@@ -387,7 +388,7 @@ function updateEmployeeRole() {
             connection.query(viewQuery, [managerId], (err, res) => {
                 if(err) throw err;
                 console.table(res);
-                start();
+                //start();
             });
         });
     });
@@ -412,11 +413,11 @@ function viewEmployeesByDepartment() {
             const { department } = answers;
 
             const viewQuery = 
-            "SELECT * FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id FROM departments WHERE department_name = ?))";
+            "SELECT * FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id = (SELECT id FROM departments WHERE department_name = ?))";
             connection.query(viewQuery, [department], (err, res) => {
                 if(err) throw err;
                 console.log(res);
-                start();
+                //start();
             });
         });
     });
@@ -440,7 +441,7 @@ function deleteData() {
         let deleteQuery;
         switch (data) {
             case "Departments":
-                deleteQuery = "DELTE FROM role";
+                deleteQuery = "DELETE FROM role";
                 break;
             case "Role":
                 deleteQuery = "DELETE FROM employee";
@@ -456,7 +457,7 @@ function deleteData() {
         connection.query(deleteQuery, (err, res) => {
             if(err) throw err;
             console.log(`Deleted all ${data.toLowerCase()} successfully!!`);
-            start();
+            //start();
         });
     });
 }
@@ -472,24 +473,26 @@ function viewBudgetByDepartment() {
                 type: "list",
                 name: "department",
                 message: "Select the department:",
-                choices: department.map((department) => department.department_name),
+                choices: departments.map((departments) => departments.department_name),
             },
         ])
         .then((answers) => {
-            const { department } = answers;
+            const { departments } = answers;
 
 
             const viewQuery = 
             `SELECT departments.department_name, 
             SUM(role.salary) AS total_budget 
-            FROM role JOIN departments 
-            ON role.department_id = department.id 
-            WHERE departments.department_name = ?`
+            FROM role 
+            JOIN departments 
+            ON role.department_id = departments.id 
+            WHERE departments.department_name IS NULL
+            GROUP BY departments.department_name`
 
-            connection.query(viewQuery, [department], (err, res) => {
+            connection.query(viewQuery, [departments], (err, res) => {
                 if(err) throw err;
                 console.table(res);
-                start();
+                //start();
             });
         });
     });
