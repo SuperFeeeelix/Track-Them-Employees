@@ -159,7 +159,7 @@ function addDepartment() {
     //Retrieve the users input from the answer object 
         console.log(answer.name);
     // Execute a SQL query using the connection.query() method to insert the department into the departments table
-        const query = `INSERT INTO departments (department_name) VALUES ("${answer.name}) `;
+        const query = `INSERT INTO departments (department_name) VALUES ("${answer.name}") `;
         connection.query(query, (err, res) => {
         if(err) throw err; 
         console.log("Department added successfully!!!");
@@ -193,9 +193,8 @@ function addRole() {
             type: "list",
             name: "Department",
             message: "What department for the role:",
-            choices: res.map(
-                (department) => department.department_name
-            ),
+            choices: res.map((department) => department.department_name),
+    
         },
         ])
   })
@@ -206,6 +205,7 @@ function addRole() {
     const selectedDepartment = res.find((dep) => dep.department_name === department);
     const departmentId = selectedDepartment.id;
     // Execute a SQL query using the connection.query() method to insert the role into the role table
+    const insertQuery = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
     connection.query(
         insertQuery,
         [title, salary, departmentId],
@@ -221,54 +221,77 @@ function addRole() {
 
 // Function to add employee's
 function addEmployee() {
-  // Implement the logic to add an employee to the database
-const query = "SELECT * FROM role"; 
-connection.query(query, (err, role) => {
-    if (err) throw err;
-    // Prompt the user to enter the employee details using inquirer
-    inquirer
-    .prompt([
-        {
-            type: "input",
-            name: "firstName",
-            message: "Enter the employee's first name",
-        }, 
-        {
-            type: "input",
-            name: "lastName",
-            message: "Enter the employee's last name",
-        },
-        {
-            type: "list",
-            name: "role",
-            choices: role.map((role) => role.title),
-        },
-        {
-            type:"input",
-            name: "messageId",
-            message: "Enter the manager's ID (if applicable):",
-            default: "NULL",
-        },
-    ])
-    .then((answers) => {
-        const { firstName, lastName, role, managerId } = answers;
-        
-        const selectedRole = role.find((r) => r.title === role);
-        const roleId = selectedRole.id;
-        // Execute a SQL query using the connection.query() method to insert the employee into the employee table
-        const insertQuery =
-        connection.query(
-            insertQuery,
-            [firstName, lastName, role, managerId],
-            (err, res) => {
-                if (err) throw err;
-                console.log("employee may have been added successfully. Unfortunately!");
-                //start();
-            }
-        );
+    const query = "SELECT * FROM role";
+    connection.query(query, (err, roles) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+  
+      const roleTitles = roles.map((role) => role.title);
+  
+      const managerQuery = "SELECT * FROM employee WHERE manager_id IS NULL";
+      connection.query(managerQuery, (err, managers) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+  
+        const managerNames = managers.map((manager) => `${manager.first_name} ${manager.last_name}`);
+  
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "firstName",
+              message: "Enter the employee's first name:",
+            },
+            {
+              type: "input",
+              name: "lastName",
+              message: "Enter the employee's last name:",
+            },
+            {
+              type: "list",
+              name: "role",
+              message: "Select the employee's role:",
+              choices: roleTitles,
+            },
+            {
+              type: "list",
+              name: "manager",
+              message: "Select the employee's manager:",
+              choices: managerNames,
+            },
+          ])
+          .then((answers) => {
+            const { firstName, lastName, role, manager } = answers;
+  
+            const selectedRole = roles.find((r) => r.title === role);
+            const selectedManager = managers.find((m) => `${m.first_name} ${m.last_name}` === manager);
+  
+            const roleId = selectedRole.id;
+            const managerId = selectedManager ? selectedManager.id : null;
+  
+            const insertQuery =
+              "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+            connection.query(insertQuery, [firstName, lastName, roleId, managerId], (err) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+  
+              console.log("Employee added successfully!");
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
     });
-})
-}
+  }
+  
+  
 
 function addManager() {
     // Implement the logic to add a manager to the database
