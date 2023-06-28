@@ -10,7 +10,10 @@ const connection = mysql.createConnection({
     database: "employeesTracker_db",
 });
 
-// connect to the database 
+// connect to the database
+/** generate a function that will allow the user to continue connecting to the server even when an answer has been answered
+ * try and figure where and how this can be generated to each and every function that is on the server.
+ */
 connection.connect((err) => {
     if(err) throw err;
     console.log("connected to the database!");
@@ -107,21 +110,19 @@ function viewAllDepartments() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.log(res);
-        //start();
     });
 }
 
 // Function to view all roles
 function viewAllRoles() {
     // Implement the logic to view all roles from the database
-    const query = `SELECT * FROM role.id, role.title, departments.department_name, role.salary 
-    FROM role JOIN departments 
-    ON role.department_id = departments.id`;
+    const query = `SELECT role.id, role.title, departments.department_name, role.salary ` + 
+    `FROM role ` + 
+    `JOIN departments ON role.department_id = departments.id`;
     // Execute a SQL query using the connection.query() method
     connection.query(query, (err, res) => {
         if(err) throw err;
         console.table(res);
-        //start();
     })
 }
 
@@ -129,7 +130,7 @@ function viewAllRoles() {
 function viewAllEmployees() {
     // Implement the logic to view all employees from the database
     const query = 
-    `SELECT * FROM e.id, e.first_name, e.last_name, r.title, d.department_name, r.salary,
+    `SELECT e.id, e.first_name, e.last_name, r.title, d.department_name, r.salary,
      CONCAT(m.first_name, ' ', m.last_name) AS manager_name 
      FROM employee e 
      LEFT JOIN role r ON e.role_id = r.id 
@@ -139,7 +140,6 @@ function viewAllEmployees() {
     connection.query(query, (err, res) => {
         if(err) throw err;
         console.log(res);
-        //start();
     });
 
 }
@@ -212,7 +212,6 @@ function addRole() {
         (err, res) => {
             if (err) throw err;
             console.log("Role added successfully!");
-            //start();
         }
     );
   });
@@ -267,7 +266,7 @@ function addEmployee() {
           .then((answers) => {
             const { firstName, lastName, role, manager } = answers;
   
-            const selectedRole = roles.find((r) => r.title === role);
+            const selectedRole = roles.find((r) => r.title === answers.role);
             const selectedManager = managers.find((m) => `${m.first_name} ${m.last_name}` === manager);
   
             const roleId = selectedRole.id;
@@ -292,7 +291,7 @@ function addEmployee() {
   }
   
   
-
+// Create the function to have choices/ what role/ what department/ what salary
 function addManager() {
     // Implement the logic to add a manager to the database
     inquirer
@@ -321,7 +320,6 @@ function addManager() {
           (err, res) => {
             if (err) throw err;
             console.log("Manager added successfully!");
-            //start();
           }
         );
       });
@@ -368,7 +366,6 @@ function updateEmployeeRole() {
             (err, res) => {
               if (err) throw err;
               console.log("Employee role updated successfully!");
-              //start();
             }
           );
         });
@@ -411,7 +408,6 @@ function updateEmployeeRole() {
             connection.query(viewQuery, [managerId], (err, res) => {
                 if(err) throw err;
                 console.table(res);
-                //start();
             });
         });
     });
@@ -440,12 +436,12 @@ function viewEmployeesByDepartment() {
             connection.query(viewQuery, [department], (err, res) => {
                 if(err) throw err;
                 console.log(res);
-                //start();
             });
         });
     });
 }
 
+// the function to delete is giving me the default
 //Function to delete data
 function deleteData() {
     inquirer
@@ -454,7 +450,7 @@ function deleteData() {
             type: "list",
             name: "data",
             message: "Select the data to delete:",
-            choices: ["Departments", "Role", "Employees"],
+            choices: ["Departments", "Role", "Employee"],
         },
     ])
     .then((answers) => {
@@ -464,27 +460,26 @@ function deleteData() {
         let deleteQuery;
         switch (data) {
             case "Departments":
-                deleteQuery = "DELETE FROM role";
+                deleteQuery = "DELETE FROM Departments";
                 break;
             case "Role":
-                deleteQuery = "DELETE FROM employee";
+                deleteQuery = "DELETE FROM Role";
                 break;
-            case "Employees":
-                deleteQuery = "DELETE FROM employee";
+            case "Employee":
+                deleteQuery = "DELETE FROM Employee";
                 break;
                 default:
                 console.log("Invalid choices, Please come again soon.");
-                start();
                 return;
         }
         connection.query(deleteQuery, (err, res) => {
             if(err) throw err;
             console.log(`Deleted all ${data.toLowerCase()} successfully!!`);
-            //start();
         });
     });
 }
 
+// data not appearing to show me the total budget that was generated for the role
 //Function to view budget by department
 function viewBudgetByDepartment() {
     const query = "SELECT * FROM departments";
@@ -515,7 +510,6 @@ function viewBudgetByDepartment() {
             connection.query(viewQuery, [departments], (err, res) => {
                 if(err) throw err;
                 console.table(res);
-                //start();
             });
         });
     });
