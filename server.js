@@ -15,34 +15,32 @@ connection.connect((err) => {
     if(err) throw err;
     console.log("connected to the database!");
     //start the application
-    start();
 });
 
-// Function to Start Employee Tracker Application
-function start()
-inquirer.prompt({
-    type:"list",
-    name:"action",
-    message: "what would jesus do?",
-    choices: [
-        "View all departments",
-        "View all roles",
-        "View all employees",
-        "Add a department",
-        "Add a role",
-        "Add an employee",
-        "Add a Manager",
-        "Update an employee role",
-        "View Employees by Manager",
-        "View Employees by Department",
-        "Delete Departments | Roles | Employees",
-        "View the total utilized budget of a department",
-        "Exit",
-    ],
-})
 
-// function to view all departments
-.then((answer) => {
+// Function to Start Employee Tracker Application
+inquirer.prompt([
+    {
+        type: "list",
+        name: "action",
+        message: "what would jesus do?",
+        choices: [
+            "View all departments",
+            "View all roles",
+            "View all employees",
+            "Add a department",
+            "Add a role",
+            "Add an employee",
+            "Add a Manager",
+            "Update an employee role",
+            "View Employees by Manager",
+            "View Employees by Department",
+            "Delete Departments | Roles | Employees",
+            "View the total utilized budget of a department",
+            "Exit",
+        ],
+    },
+]).then((answer) => {
     switch (answer.action) {
         case "view all departments":
             // Call the function to handle view all departments
@@ -99,7 +97,6 @@ inquirer.prompt({
             break;
             default:
             console.log("invalid choice. Please try again and again if you have to but don't quit.");
-            start();
 
     }
 });
@@ -151,11 +148,13 @@ function viewAllEmployees() {
 function addDepartment() {
     // Prompt the user to enter the department details using inquirer
     inquirer
-        .prompt({
+        .prompt([
+        {
             type: "input",
             name: "name",
             message: "Enter the name of the department you are trying to add:",
-        })
+        },
+    ])
     .then((answer) => {
     //Retrieve the users input from the answer object 
         const departmentName = answer.name;
@@ -166,8 +165,8 @@ function addDepartment() {
         if(err) throw err; 
         console.log("Department added successfully!!!");
         start();
-    })
-})
+    });
+});
     
 }
 
