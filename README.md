@@ -16,6 +16,13 @@
   mysql2 and inquirer@8.2.4
   ## Usage
   mysql and node.js
+  ## video
+ 
+
+https://github.com/SuperFeeeelix/Track-Them-Employees/assets/127154412/4ad62436-e586-4570-bf00-4f98a8b99955
+
+
+  
   ## Contact-Me
   * Name - Oswaldo O. Felix Thompson
   * Email - oswaldo_felix@outlook.com
