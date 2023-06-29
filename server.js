@@ -188,6 +188,7 @@ function addRole() {
             type: "input",
             name: "Title",
             message: "Enter the title of the role",
+            input: "accept", //Allow non-empty input
         }, 
         {
             type: "input",
