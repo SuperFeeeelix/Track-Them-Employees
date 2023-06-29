@@ -11,17 +11,14 @@ const connection = mysql.createConnection({
 });
 
 // connect to the database
-/** generate a function that will allow the user to continue connecting to the server even when an answer has been answered
- * try and figure where and how this can be generated to each and every function that is on the server.
- */
 connection.connect((err) => {
     if(err) throw err;
     console.log("connected to the database!");
-    
 });
 
 
 // Function to Start Employee Tracker Application
+function start() {
 inquirer.prompt([
     {
         type: "list",
@@ -95,14 +92,21 @@ inquirer.prompt([
                 break;
         case "Exit":
             // End the database connection and exit the application
-            connection.end();
             console.log("Goodbye!!!!");
+            connection.end();
             break;
             default:
             console.log("invalid choice. Please try again and again if you have to but don't quit.");
-
     }
+    start();
+})
+.catch((error) => {
+  console.log("Error:", error);
+  connection.end();
 });
+}
+
+start();
 
 // Function to view all deparments
 function viewAllDepartments() {
@@ -110,6 +114,7 @@ function viewAllDepartments() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.log(res);
+        start();
     });
 }
 
